@@ -3,10 +3,10 @@ package exam.hydromap.julienheroguelle.hydromap.Networking.Presenter;
 import java.util.List;
 
 import exam.hydromap.julienheroguelle.hydromap.Networking.Interfaces.ForecastProtocol;
-import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel.Coords;
-import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel.Forecast;
-import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel.OWMError;
-import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel.OWMRect;
+import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.Coords;
+import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.Forecast;
+import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.OWMError;
+import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.OWMRect;
 import exam.hydromap.julienheroguelle.hydromap.Networking.Repository.ForecastRepository;
 
 /**

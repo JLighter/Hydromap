@@ -9,11 +9,11 @@ import com.google.gson.Gson;
 
 import java.util.List;
 
-import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel.Coords;
-import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel.Forecast;
-import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel.OWMError;
-import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel.ForecastList;
-import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel.OWMRect;
+import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.Coords;
+import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.Forecast;
+import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.OWMError;
+import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.ForecastList;
+import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.OWMRect;
 import exam.hydromap.julienheroguelle.hydromap.Networking.Presenter.ForecastPresenter;
 import exam.hydromap.julienheroguelle.hydromap.Utils.Networking;
 

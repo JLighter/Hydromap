@@ -1,4 +1,4 @@
-package exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel;
+package exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels;
 
 /**
  * Created by julienheroguelle on 17/07/2017.

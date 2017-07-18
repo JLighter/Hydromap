@@ -2,8 +2,8 @@ package exam.hydromap.julienheroguelle.hydromap.Networking.Interfaces;
 
 import java.util.List;
 
-import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel.Forecast;
-import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel.OWMError;
+import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.Forecast;
+import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.OWMError;
 
 /**
  * Created by julienheroguelle on 16/07/2017.
