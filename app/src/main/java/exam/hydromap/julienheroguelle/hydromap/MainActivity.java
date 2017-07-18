@@ -1,5 +1,6 @@
 package exam.hydromap.julienheroguelle.hydromap;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,17 +18,13 @@ import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel.Fo
 import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel.OWMError;
 import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel.OWMRect;
 import exam.hydromap.julienheroguelle.hydromap.Networking.Presenter.ForecastPresenter;
-import android.support.v4.app.FragmentActivity;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import exam.hydromap.julienheroguelle.hydromap.Utils.map.MapHeatsActivity;
+
 
 public class MainActivity  extends AppCompatActivity implements ForecastProtocol {
 
 
-    private GoogleMap mMap;
+
     ForecastPresenter presenter = new ForecastPresenter(this);
 
     @Override
@@ -50,7 +47,8 @@ public class MainActivity  extends AppCompatActivity implements ForecastProtocol
 
         presenter.getForecastsByName("Paris", "fr");
 
-
+        Intent i = new Intent(this, MapHeatsActivity.class);
+       startActivity(i);
     }
 
 
