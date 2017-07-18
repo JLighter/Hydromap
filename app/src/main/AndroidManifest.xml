@@ -3,6 +3,8 @@
     package="exam.hydromap.julienheroguelle.hydromap" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:name=".Utils.App"
@@ -12,13 +14,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
+
         <activity android:name=".MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <meta-data
+            android:name="com.google.android.geo.AIzaSyBV7-E1joOGpoG4Lo0uCGW1albsJtoo8hw"
+            android:value="AIzaSyBV7-E1joOGpoG4Lo0uCGW1albsJtoo8hw"/>
+
+
     </application>
 
 </manifest>
