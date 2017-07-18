@@ -4,7 +4,9 @@ package exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Coord {
+import static java.lang.Math.cos;
+
+public class Coords {
 
     @SerializedName("lon")
     @Expose
@@ -13,7 +15,7 @@ public class Coord {
     @Expose
     public Float lat;
 
-    public Coord(Float lat, Float lon) {
+    public Coords(Float lat, Float lon) {
         this.lat = lat;
         this.lon = lon;
     }

@@ -1,13 +1,12 @@
 package exam.hydromap.julienheroguelle.hydromap.Networking.Presenter;
 
-import android.os.Bundle;
-
 import java.util.List;
 
 import exam.hydromap.julienheroguelle.hydromap.Networking.Interfaces.ForecastProtocol;
-import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel.Coord;
+import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel.Coords;
 import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel.Forecast;
 import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel.OWMError;
+import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel.OWMRect;
 import exam.hydromap.julienheroguelle.hydromap.Networking.Repository.ForecastRepository;
 
 /**
@@ -24,15 +23,31 @@ public class ForecastPresenter {
         repository = new ForecastRepository(this);
     }
 
-    public void getFrenchForecasts() {
-        repository.getFrenchForecasts();
+    public void getForecastsByZip(String code, String country) {
+        repository.getForecastsByZip(code, country);
     }
 
-    public void getForecastbyCoords(Coord coords) {
+    public void getForecastsByName(String query, String country) {
+        repository.getForecastsByName(query, country);
+    }
+
+    public void getForecastsByRect(OWMRect rect, Integer distance) {
+        repository.getForecastsByRect(rect, distance);
+    }
+
+    public void getForecastsById(List<Integer> ids) {
+        repository.getForecastsById(ids);
+    }
+
+        public void getForecastByCoords(Coords coords) {
         repository.getForecastByCoords(coords);
     }
 
-    public void didGotForecasts(List<Forecast> list, OWMError error) {
+    public void getForecastsByCycle(Coords coords, Integer count) {
+        repository.getForecastsByCycle(coords, count);
+    }
+
+        public void didGotForecasts(List<Forecast> list, OWMError error) {
         listener.didGotForecasts(list, error);
     }
 

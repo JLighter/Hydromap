@@ -9,7 +9,7 @@ public class Forecast {
 
     @SerializedName("coord")
     @Expose
-    public Coord coord;
+    public Coords coord;
     @SerializedName("weather")
     @Expose
     public List<Weather> weather = null;
