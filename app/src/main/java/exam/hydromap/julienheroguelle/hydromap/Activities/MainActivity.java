@@ -28,14 +28,13 @@ import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.OWMRe
 import exam.hydromap.julienheroguelle.hydromap.Networking.Presenter.ForecastPresenter;
 import exam.hydromap.julienheroguelle.hydromap.R;
 import exam.hydromap.julienheroguelle.hydromap.Utils.App;
+import exam.hydromap.julienheroguelle.hydromap.Utils.map.BaseMap;
 import exam.hydromap.julienheroguelle.hydromap.Utils.map.MapHeatsActivity;
 
 public class MainActivity extends AppCompatActivity implements ForecastProtocol, MapDelegate{
 
     private EditText editTextSearch;
     private Button modeBtn;
-
-    private boolean isRetrievingData = false;
 
     ForecastPresenter presenter = new ForecastPresenter(this);
 
@@ -53,6 +52,10 @@ public class MainActivity extends AppCompatActivity implements ForecastProtocol,
         mSearchView = (SearchView) findViewById(R.id.searchView);
 
         heatMap = getSupportFragmentManager().findFragmentById(R.id.heatMap);
+
+        OWMRect rect = new OWMRect(-5f, 42f, 8f, 51f);
+
+        presenter.getForecastsByRect(rect, 10);
 
         ((MapHeatsActivity) heatMap).delegate = this;
 
@@ -84,10 +87,6 @@ public class MainActivity extends AppCompatActivity implements ForecastProtocol,
 
     public void changeGradient(View view) {
         ((MapHeatsActivity) heatMap).changeGradient();
-
-        OWMRect rect = new OWMRect(-5f, 42f, 8f, 51f);
-
-        presenter.getForecastsByRect(rect, 10);
     }
 
     @Override
@@ -108,25 +107,22 @@ public class MainActivity extends AppCompatActivity implements ForecastProtocol,
                 }
             }
 
-            ((MapHeatsActivity) heatMap).initData(list);
+            //((MapHeatsActivity) heatMap).initData(list);
 
         }
     }
 
     @Override
     public void didGotForecast(Forecast forecast, OWMError error) {
-        if (error != null) {
-            Log.e("FORECAST ERROR:", error.message);
-        } else if (isRetrievingData && forecast != null){
-            Intent detailIntent = new Intent(App.getAppContext(), DetailActivity.class);
-            startActivity(detailIntent);
-        }
+
     }
 
     @Override
     public void didTapOnMapAt(Coords coords) {
-        isRetrievingData = true;
-        presenter.getForecastByCoords(coords);
+        Intent detailIntent = new Intent(App.getAppContext(), DetailActivity.class);
+        detailIntent.putExtra("latitude", coords.lat);
+        detailIntent.putExtra("longitude", coords.lon);
+        startActivity(detailIntent);
     }
 
     // Only for SearchView.VERSION_MENU_ITEM

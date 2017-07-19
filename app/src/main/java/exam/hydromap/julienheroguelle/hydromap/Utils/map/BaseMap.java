@@ -6,6 +6,7 @@ package exam.hydromap.julienheroguelle.hydromap.Utils.map;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.widget.ImageView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -13,11 +14,16 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import exam.hydromap.julienheroguelle.hydromap.Delegates.MapDelegate;
 import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.Coords;
+import exam.hydromap.julienheroguelle.hydromap.Utils.App;
 
 public abstract class BaseMap extends SupportMapFragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
 
@@ -41,7 +47,9 @@ public abstract class BaseMap extends SupportMapFragment implements OnMapReadyCa
         }
         mMap = map;
         mMap.setOnMapClickListener(this);
-
+        mMap.getUiSettings().setMapToolbarEnabled(true);
+        mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+        mMap.setTrafficEnabled(false);
         startDemo();
     }
 
@@ -58,35 +66,21 @@ public abstract class BaseMap extends SupportMapFragment implements OnMapReadyCa
         return mMap;
     }
 
-    /**
-     * This function retrieve the mapView snapshot in order to put it in an imageView for preview or anything else
-     * @param coord The center coords of the region you want to snapshot
-     * @param imageView The imageview you want it to get image on
-     */
-    protected void getSnapshotOf(final Coords coord, final ImageView imageView) {
-
-        mMap.snapshot(new GoogleMap.SnapshotReadyCallback() {
-            @Override
-            public void onSnapshotReady(Bitmap bitmap) {
-
-                mMap.addMarker(new MarkerOptions().position(coord.getLatLng()));
-
-                CameraUpdate lastLocation = CameraUpdateFactory.newCameraPosition(mMap.getCameraPosition());
-                CameraUpdate newLocation = CameraUpdateFactory.newLatLngZoom(coord.getLatLng(), 4.0f);
-
-                mMap.moveCamera(newLocation);
-
-                imageView.setImageBitmap(bitmap);
-
-                mMap.moveCamera(lastLocation);
-
-            }
-        });
-    }
-
     @Override
     public void onMapClick(LatLng latLng) {
-        Coords coords = new Coords(latLng.latitude, latLng.longitude);
-        delegate.didTapOnMapAt(coords);
+        final Coords coords = new Coords(latLng.latitude, latLng.longitude);
+
+        CameraPosition position = new CameraPosition.Builder().zoom(10.0f).target(latLng).build();
+        CameraUpdate camera = CameraUpdateFactory.newCameraPosition(position);
+        mMap.animateCamera(camera);
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                delegate.didTapOnMapAt(coords);
+            }
+        }, 2000);
+
     }
 }
