@@ -33,21 +33,16 @@ import exam.hydromap.julienheroguelle.hydromap.Utils.map.MapHeatsActivity;
 
 public class MainActivity extends AppCompatActivity implements ForecastProtocol, MapDelegate{
 
-    private EditText editTextSearch;
-    private Button modeBtn;
-
     ForecastPresenter presenter = new ForecastPresenter(this);
 
     private Fragment heatMap;
 
     public SearchView mSearchView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        modeBtn = (Button) findViewById(R.id.modeButton);
-//        editTextSearch = (EditText) findViewById(R.id.editTextSearch);
 
         mSearchView = (SearchView) findViewById(R.id.searchView);
 
@@ -58,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements ForecastProtocol,
         presenter.getForecastsByRect(rect, 10);
 
         ((MapHeatsActivity) heatMap).delegate = this;
-
 
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
