@@ -13,6 +13,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.internal.IGoogleMapDelegate;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,7 @@ import exam.hydromap.julienheroguelle.hydromap.R;
 import exam.hydromap.julienheroguelle.hydromap.Utils.App;
 import exam.hydromap.julienheroguelle.hydromap.Utils.map.BaseMap;
 
-public class DetailActivity extends AppCompatActivity implements ForecastProtocol, OnMapReadyCallback {
+public class DetailActivity extends AppCompatActivity implements ForecastProtocol {
 
     ImageView header;
 
@@ -68,6 +69,8 @@ public class DetailActivity extends AppCompatActivity implements ForecastProtoco
 
         if (latitude != null && longitude != null) {
             presenter.getForecastByCoords(forecastCoords);
+
+            setHeaderWith(forecastCoords);
         }
 
     }
@@ -76,11 +79,6 @@ public class DetailActivity extends AppCompatActivity implements ForecastProtoco
     public boolean onSupportNavigateUp(){
         finish();
         return true;
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-    //    header.setImageBitmap(BaseMap.getSnapshotOf(forecast.coord, googleMap));
     }
 
     @Override
@@ -95,7 +93,18 @@ public class DetailActivity extends AppCompatActivity implements ForecastProtoco
             pressureLabel.setText(String.format("%.0f Pa", forecast.main.pressure));
             speedLabel.setText(String.format("%.0f km/h", forecast.wind.speed));
             degreeLabel.setText(String.format("%.0f °", forecast.wind.deg));
+
+            if (forecast.coord.lat != null && forecast.coord.lon != null){
+                setHeaderWith(forecast.coord);
+            }
         }
+    }
+
+    private void setHeaderWith(Coords coords) {
+        String url = "http://maps.google.com/maps/api/staticmap?center=" + coords.lat + "," + coords.lon + "&zoom=" + BaseMap.zoomLevel + "&size=550x300&sensor=false&maptype=terrain&format=jpeg&visual_refresh=true";
+        Log.d("STATIC MAP URL", url);
+        Picasso.with(App.getAppContext()).load(url).into(header);
+        header.setAdjustViewBounds(true);
     }
 
     @Override

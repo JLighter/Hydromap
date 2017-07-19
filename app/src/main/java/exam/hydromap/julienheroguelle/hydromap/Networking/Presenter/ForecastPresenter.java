@@ -75,7 +75,7 @@ public class ForecastPresenter {
         }
     }
 
-        public void didGotForecasts(List<Forecast> list, OWMError error) {
+    public void didGotForecasts(List<Forecast> list, OWMError error) {
         listener.didGotForecasts(list, error);
     }
 
