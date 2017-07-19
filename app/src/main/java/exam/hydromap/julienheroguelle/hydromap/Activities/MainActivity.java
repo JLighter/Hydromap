@@ -1,5 +1,7 @@
-package exam.hydromap.julienheroguelle.hydromap;
+package exam.hydromap.julienheroguelle.hydromap.Activities;
 
+import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +20,8 @@ import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.OWMEr
 import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.OWMRect;
 import exam.hydromap.julienheroguelle.hydromap.Networking.Presenter.AWherePresenter;
 import exam.hydromap.julienheroguelle.hydromap.Networking.Presenter.ForecastPresenter;
+import exam.hydromap.julienheroguelle.hydromap.R;
+import exam.hydromap.julienheroguelle.hydromap.Utils.map.MapHeatsActivity;
 
 public class MainActivity extends AppCompatActivity implements ForecastProtocol, AWhereProtocol {
 
@@ -47,12 +51,15 @@ public class MainActivity extends AppCompatActivity implements ForecastProtocol,
 
         aWherePresenter.getNorms(coords, "06", "01", 2014, 2017);
 
+        Intent i = new Intent(this, MapHeatsActivity.class);
+        startActivity(i);
     }
+
 
     @Override
     public void didGotForecasts(List<Forecast> forecasts, OWMError error) {
         if (error != null) {
-            System.out.print(error);
+            System.out.print(error.toString());
         } else {
             for (Forecast forecast : forecasts) {
                 Log.d("MULTIPLE INFO", forecast.name + " " + forecast.main.temp);
@@ -63,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements ForecastProtocol,
     @Override
     public void didGotForecast(Forecast forecast, OWMError error) {
         if (error != null) {
-            System.out.print(error);
+            System.out.print(error.toString());
         } else {
             Log.d("SINGLE INFO", forecast.name + " " + forecast.main.temp + " ");
         }
@@ -72,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements ForecastProtocol,
     @Override
     public void didGotNorm(Norm norm, VolleyError error) {
         if (error != null) {
-            System.out.print(error);
+            System.out.print(error.toString());
         } else {
             Log.d("NORM INFO", norm.links.toString());
         }

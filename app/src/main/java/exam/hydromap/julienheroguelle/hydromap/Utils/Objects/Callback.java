@@ -1,4 +1,4 @@
-package exam.hydromap.julienheroguelle.hydromap.Objects;
+package exam.hydromap.julienheroguelle.hydromap.Utils.Objects;
 
 /**
  * Created by julienheroguelle on 18/07/2017.

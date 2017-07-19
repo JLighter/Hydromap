@@ -18,7 +18,7 @@ import exam.hydromap.julienheroguelle.hydromap.Networking.Models.AWhereModel.Nor
 import exam.hydromap.julienheroguelle.hydromap.Networking.Models.AWhereModel.Token;
 import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.Coords;
 import exam.hydromap.julienheroguelle.hydromap.Networking.Presenter.AWherePresenter;
-import exam.hydromap.julienheroguelle.hydromap.Objects.Callback;
+import exam.hydromap.julienheroguelle.hydromap.Utils.Objects.Callback;
 import exam.hydromap.julienheroguelle.hydromap.Utils.Helper;
 import exam.hydromap.julienheroguelle.hydromap.Utils.Networking;
 
@@ -26,20 +26,24 @@ import exam.hydromap.julienheroguelle.hydromap.Utils.Networking;
  * Created by julienheroguelle on 18/07/2017.
  */
 
-interface NestedFunction {
-    void function();
-}
+/**
+ * Make sure that you retrieve token if needed at the end of each function with a callback
+ * else the call can fail with a 401 error, but not handle
+ * TODO: handle 401 error in order to retrieve a new token for each methods in class
+ */
 
 public class AWhereRepository {
 
     AWherePresenter listener;
+
+    final String ENDPOINT = "https://api.awhere.com/";
 
     public AWhereRepository(AWherePresenter listener) {
         this.listener = listener;
     }
 
     private void authForToken(final Callback callback) {
-        String url = "https://api.awhere.com/oauth/token";
+        String url = ENDPOINT + "oauth/token";
 
         final AWhereRequestForAuth request = new AWhereRequestForAuth(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -73,13 +77,14 @@ public class AWhereRepository {
         Networking.getInstance().addToRequestQueue(request);
     }
 
+    /** StartYear and EndYear must be seperated by 3 years minimum */
     public void getNorms(final Coords coords, final String day, final String month, final Integer startYear, final Integer endYear) {
 
         // Defining call to execute
-        final NestedFunction doCall = new NestedFunction() {
+        final NestedFunction callback = new NestedFunction() {
             @Override
             public void function() {
-                String url = "https://api.awhere.com/v2/weather/locations/";
+                String url = ENDPOINT + "v2/weather/locations/";
                 url += coords.lat.toString() + "," + coords.lon.toString();
                 url += "/norms/" + month + "-" + day;
                 url += "/years/" + startYear.toString() + "," + endYear.toString();
@@ -106,6 +111,52 @@ public class AWhereRepository {
             }
         };
 
+        this.retrieveTokenIfNeeded(callback);
+
+    }
+
+    /** StartYear and EndYear must be seperated by 3 years minimum
+     *  Days are formatted like MM-DD
+     *  Years are formatted like YYYY
+     */
+    public void getNormsPrecisely(final Coords coords, final String startDay, final String endDay, final Integer startYear, final Integer endYear) {
+
+        // Defining call to execute
+        final NestedFunction callback = new NestedFunction() {
+            @Override
+            public void function() {
+                String url = ENDPOINT + "v2/weather/locations/";
+                url += coords.lat.toString() + "," + coords.lon.toString();
+                url += "/norms/" + startDay + "," + endDay;
+                url += "/years/" + startYear.toString() + "," + endYear.toString();
+
+                final AWhereRequest request = new AWhereRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Gson gson = new Gson();
+                        Norm norm = gson.fromJson(response, Norm.class);
+
+                        listener.didGotNorm(norm, null);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        listener.didGotNorm(null, error);
+                    }
+                });
+
+                request.setRetryPolicy(new DefaultRetryPolicy(5000, 5000, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+                Networking.getInstance().addToRequestQueue(request);
+            }
+        };
+
+        this.retrieveTokenIfNeeded(callback);
+
+    }
+
+    private void retrieveTokenIfNeeded(final NestedFunction callback) {
         // Verify if the token is almost expired, if true we retrieve a new one and do call, else, only do call
         if (isTokenAlmostExpired()) {
             authForToken(new Callback() {
@@ -113,14 +164,14 @@ public class AWhereRepository {
                 public Void call() {
 
                     if ((Boolean) result == true) {
-                        doCall.function();
+                        callback.function();
                     }
 
                     return null;
                 }
             });
         } else {
-            doCall.function();
+            callback.function();
         }
     }
 
@@ -135,6 +186,8 @@ public class AWhereRepository {
 
 }
 
+/** This request is only use when we try to perform a OAuth login to aWhere API
+ it contains an Authorization with Basic attributs, follows by secret and client id in MD5 */
 class AWhereRequestForAuth extends StringRequest {
 
     public AWhereRequestForAuth(int method, String url,
@@ -159,6 +212,7 @@ class AWhereRequestForAuth extends StringRequest {
     }
 }
 
+/** This request helps to perform a Http Request of any method with aWhere specific token */
 class AWhereRequest extends StringRequest {
 
     public AWhereRequest(int method, String url,
@@ -175,4 +229,8 @@ class AWhereRequest extends StringRequest {
         }
         return headers;
     }
+}
+
+interface NestedFunction {
+    void function();
 }
