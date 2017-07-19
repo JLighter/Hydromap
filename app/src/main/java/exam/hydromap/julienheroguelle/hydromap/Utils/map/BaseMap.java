@@ -6,10 +6,6 @@ package exam.hydromap.julienheroguelle.hydromap.Utils.map;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -17,21 +13,18 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import exam.hydromap.julienheroguelle.hydromap.Delegates.MapDelegate;
 import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.Coords;
-import exam.hydromap.julienheroguelle.hydromap.R;
 
-public abstract class BaseMap extends SupportMapFragment implements OnMapReadyCallback {
-    private GoogleMap mMap;
+public abstract class BaseMap extends SupportMapFragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
 
+    protected GoogleMap mMap;
 
-    /*
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.map, container, false);
-    }*/
+    public MapDelegate delegate;
+
 
     @Override
     public void onActivityCreated(Bundle bundle) {
@@ -47,6 +40,8 @@ public abstract class BaseMap extends SupportMapFragment implements OnMapReadyCa
             return;
         }
         mMap = map;
+        mMap.setOnMapClickListener(this);
+
         startDemo();
     }
 
@@ -87,5 +82,11 @@ public abstract class BaseMap extends SupportMapFragment implements OnMapReadyCa
 
             }
         });
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        Coords coords = new Coords(latLng.latitude, latLng.longitude);
+        delegate.didTapOnMapAt(coords);
     }
 }

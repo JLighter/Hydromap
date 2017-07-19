@@ -5,19 +5,8 @@ package exam.hydromap.julienheroguelle.hydromap.Utils.map;
  */
 
 
-import android.content.Context;
 import android.graphics.Color;
-import android.os.Bundle;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
-import android.util.AttributeSet;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -25,13 +14,14 @@ import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.maps.android.heatmaps.WeightedLatLng;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+
+import exam.hydromap.julienheroguelle.hydromap.Delegates.MapDelegate;
+import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.Coords;
+import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.Forecast;
 
 
 /**
@@ -40,16 +30,6 @@ import java.util.HashMap;
  * different colors representing areas of high and low concentration/combined intensity of points.
  */
 public class MapHeatsActivity extends BaseMap {
-
-    /**
-     * Alternative radius for convolution
-     */
-    private static final int ALT_HEATMAP_RADIUS = 10;
-
-    /**
-     * Alternative opacity of heatmap overlay
-     */
-    private static final double ALT_HEATMAP_OPACITY = 0.4;
 
     /**
      * Hydro map gradient
@@ -93,61 +73,37 @@ public class MapHeatsActivity extends BaseMap {
 
     private static boolean mHeatGradient = true;
 
+    private List<WeightedLatLng> currentList;
+
     public MapHeatsActivity() {
 
     }
 
-    /**
-     * Maps name of data set to data (list of LatLngs)
-     * Also maps to the URL of the data set for attribution
-     */
-    private HashMap<String, DataSet> mLists = new HashMap<String, DataSet>();
-
     @Override
     protected void startDemo() {
-        getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-25, 143), 4));
-
-        // Make the handler deal with the map
-        // Input: list of WeightedLatLngs, minimum and maximum zoom levels to calculate custom
-        // intensity from, and the map to draw the heatmap on
-        // radius, gradient and opacity not specified, so default are used
+       getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(48.85, 2.34), 4));
     }
 
-    public static void changeGradient() {
-
-        // TODO : init mProvier and mOverlay properties
-        /*
-        if (mHeatGradient) {
-            mProvider.setGradient(TEMP_MAP_GRADIENT);
-        } else {
-            mProvider.setGradient(HYDRO_MAP_GRADIENT);
-        }
-        mOverlay.clearTileCache();
-        mHeatGradient = !mHeatGradient;
-        */
-    }
-
-
-
-    /**
-     * Helper class - stores data sets and sources.
-     */
-    private class DataSet {
-        private ArrayList<LatLng> mDataset;
-        private String mUrl;
-
-        public DataSet(ArrayList<LatLng> dataSet, String url) {
-            this.mDataset = dataSet;
-            this.mUrl = url;
-        }
-
-        public ArrayList<LatLng> getData() {
-            return mDataset;
-        }
-
-        public String getUrl() {
-            return mUrl;
+    public void changeGradient() {
+        if (mProvider != null && mOverlay != null) {
+            if (mHeatGradient) {
+                mProvider.setGradient(TEMP_MAP_GRADIENT);
+            } else {
+                mProvider.setGradient(HYDRO_MAP_GRADIENT);
+            }
+            mOverlay.clearTileCache();
+            mHeatGradient = !mHeatGradient;
         }
     }
 
+    public void initData(ArrayList<WeightedLatLng> list) {
+        currentList = list;
+        mProvider = new HeatmapTileProvider.Builder().weightedData(list).radius(50).build();
+        mOverlay = getMap().addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        super.onMapClick(latLng);
+    }
 }

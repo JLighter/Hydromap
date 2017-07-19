@@ -4,17 +4,18 @@ package exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.google.maps.android.heatmaps.WeightedLatLng;
 
 public class Coords {
 
-    @SerializedName("lon")
+    @SerializedName("Lon")
     @Expose
-    public Float lon;
-    @SerializedName("lat")
+    public Double lon;
+    @SerializedName("Lat")
     @Expose
-    public Float lat;
+    public Double lat;
 
-    public Coords(Float lat, Float lon) {
+    public Coords(Double lat, Double lon) {
         this.lat = lat;
         this.lon = lon;
     }

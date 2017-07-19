@@ -60,7 +60,7 @@ public class ForecastRepository {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    OWMError err = new OWMError("0", "No server");
+                    OWMError err = new OWMError("0", error.getLocalizedMessage());
                     listener.didGotForecasts(null, err);
                 }
             });

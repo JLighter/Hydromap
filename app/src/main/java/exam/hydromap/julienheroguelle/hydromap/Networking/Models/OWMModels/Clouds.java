@@ -9,5 +9,8 @@ public class Clouds {
     @SerializedName("all")
     @Expose
     public Integer all;
+    @SerializedName("today")
+    @Expose
+    public Integer today;
 
 }
