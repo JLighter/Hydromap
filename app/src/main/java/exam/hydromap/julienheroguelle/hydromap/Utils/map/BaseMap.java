@@ -6,7 +6,10 @@ package exam.hydromap.julienheroguelle.hydromap.Utils.map;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -14,31 +17,28 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.Coords;
 import exam.hydromap.julienheroguelle.hydromap.R;
-import exam.hydromap.julienheroguelle.hydromap.Utils.App;
 
-public abstract class BaseMap extends FragmentActivity implements OnMapReadyCallback {
+public abstract class BaseMap extends SupportMapFragment implements OnMapReadyCallback {
     private GoogleMap mMap;
 
-    protected int getLayoutId() {
-        return R.layout.map;
-    }
+
+    /*
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.map, container, false);
+    }*/
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(getLayoutId());
-        setUpMap();
-    }
+    public void onActivityCreated(Bundle bundle) {
+        super.onActivityCreated(bundle);
 
-    @Override
-    protected void onResume() {
-        super.onResume();
         setUpMap();
+
     }
 
     @Override
@@ -51,7 +51,7 @@ public abstract class BaseMap extends FragmentActivity implements OnMapReadyCall
     }
 
     private void setUpMap() {
-        ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
+        getMapAsync(this);
     }
 
     /**

@@ -5,12 +5,16 @@ package exam.hydromap.julienheroguelle.hydromap.Utils.map;
  */
 
 
+import android.content.Context;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,12 +30,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 
-import exam.hydromap.julienheroguelle.hydromap.R;
 
 /**
  * A demo of the Heatmaps library. Demonstrates how the HeatmapTileProvider can be used to create
@@ -51,30 +52,50 @@ public class MapHeatsActivity extends BaseMap {
     private static final double ALT_HEATMAP_OPACITY = 0.4;
 
     /**
-     * Alternative heatmap gradient (blue -> red)
-     * Copied from Javascript version
+     * Hydro map gradient
+     * Generally blue
      */
-    private static final int[] ALT_HEATMAP_GRADIENT_COLORS = {
+    private static final int[] HYDRO_MAP_GRADIENT_COLORS = {
             Color.argb(0, 0, 255, 255),// transparent
-            Color.argb(255 / 3 * 2, 0, 255, 255),
-            Color.rgb(0, 191, 255),
-            Color.rgb(0, 0, 127),
-            Color.rgb(255, 0, 0)
+            Color.argb(255 / 3 * 2, 0, 0, 255),
+            Color.rgb(0, 0, 255),
+            Color.rgb(70, 70, 200),
+            Color.rgb(100, 100, 170)
     };
 
-    public static final float[] ALT_HEATMAP_GRADIENT_START_POINTS = {
+    public static final float[] HYDRO_MAP_GRADIENT_START_POINTS = {
             0.0f, 0.10f, 0.20f, 0.60f, 1.0f
     };
 
-    public static final Gradient ALT_HEATMAP_GRADIENT = new Gradient(ALT_HEATMAP_GRADIENT_COLORS,
-            ALT_HEATMAP_GRADIENT_START_POINTS);
+    /**
+     * Tmp heat map gradient
+     * Generally Red -> Green
+     */
+    private static final int[] TEMP_MAP_GRADIENT_COLORS = {
+            Color.argb(0, 0, 255, 255),// transparent
+            Color.argb(255 / 3 * 2, 0, 255, 255),
+            Color.rgb(0, 0, 255),
+            Color.rgb(0, 150, 127),
+            Color.rgb(255, 0, 0)
+    };
 
-    private HeatmapTileProvider mProvider;
-    private TileOverlay mOverlay;
+    public static final float[] TEMP_MAP_GRADIENT_START_POINTS = {
+            0.0f, 0.10f, 0.20f, 0.60f, 1.0f
+    };
 
-    private boolean mDefaultGradient = true;
-    private boolean mDefaultRadius = true;
-    private boolean mDefaultOpacity = true;
+    public static final Gradient HYDRO_MAP_GRADIENT = new Gradient(HYDRO_MAP_GRADIENT_COLORS,
+            HYDRO_MAP_GRADIENT_START_POINTS);
+    public static final Gradient TEMP_MAP_GRADIENT = new Gradient(TEMP_MAP_GRADIENT_COLORS,
+            TEMP_MAP_GRADIENT_START_POINTS);
+
+    private static HeatmapTileProvider mProvider;
+    private static TileOverlay mOverlay;
+
+    private static boolean mHeatGradient = true;
+
+    public MapHeatsActivity() {
+
+    }
 
     /**
      * Maps name of data set to data (list of LatLngs)
@@ -83,30 +104,8 @@ public class MapHeatsActivity extends BaseMap {
     private HashMap<String, DataSet> mLists = new HashMap<String, DataSet>();
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.heatmaps_demo;
-    }
-
-    @Override
     protected void startDemo() {
         getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-25, 143), 4));
-
-        // Set up the spinner/dropdown list
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.heatmaps_datasets_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(new SpinnerActivity());
-
-        try {
-            mLists.put(getString(R.string.police_stations), new DataSet(readItems(R.raw.police),
-                    getString(R.string.police_stations_url)));
-            mLists.put(getString(R.string.medicare), new DataSet(readItems(R.raw.medicare),
-                    getString(R.string.medicare_url)));
-        } catch (JSONException e) {
-            Toast.makeText(this, "Problem reading list of markers.", Toast.LENGTH_LONG).show();
-        }
 
         // Make the handler deal with the map
         // Input: list of WeightedLatLngs, minimum and maximum zoom levels to calculate custom
@@ -114,80 +113,21 @@ public class MapHeatsActivity extends BaseMap {
         // radius, gradient and opacity not specified, so default are used
     }
 
-    public void changeRadius(View view) {
-        if (mDefaultRadius) {
-            mProvider.setRadius(ALT_HEATMAP_RADIUS);
+    public static void changeGradient() {
+
+        // TODO : init mProvier and mOverlay properties
+        /*
+        if (mHeatGradient) {
+            mProvider.setGradient(TEMP_MAP_GRADIENT);
         } else {
-            mProvider.setRadius(HeatmapTileProvider.DEFAULT_RADIUS);
+            mProvider.setGradient(HYDRO_MAP_GRADIENT);
         }
         mOverlay.clearTileCache();
-        mDefaultRadius = !mDefaultRadius;
+        mHeatGradient = !mHeatGradient;
+        */
     }
 
-    public void changeGradient(View view) {
-        if (mDefaultGradient) {
-            mProvider.setGradient(ALT_HEATMAP_GRADIENT);
-        } else {
-            mProvider.setGradient(HeatmapTileProvider.DEFAULT_GRADIENT);
-        }
-        mOverlay.clearTileCache();
-        mDefaultGradient = !mDefaultGradient;
-    }
 
-    public void changeOpacity(View view) {
-        if (mDefaultOpacity) {
-            mProvider.setOpacity(ALT_HEATMAP_OPACITY);
-        } else {
-            mProvider.setOpacity(HeatmapTileProvider.DEFAULT_OPACITY);
-        }
-        mOverlay.clearTileCache();
-        mDefaultOpacity = !mDefaultOpacity;
-    }
-
-    // Dealing with spinner choices
-    public class SpinnerActivity implements AdapterView.OnItemSelectedListener {
-        public void onItemSelected(AdapterView<?> parent, View view,
-                                   int pos, long id) {
-            String dataset = parent.getItemAtPosition(pos).toString();
-
-            TextView attribution = ((TextView) findViewById(R.id.attribution));
-
-            // Check if need to instantiate (avoid setData etc twice)
-            if (mProvider == null) {
-                mProvider = new HeatmapTileProvider.Builder().data(
-                        mLists.get(getString(R.string.police_stations)).getData()).build();
-                mOverlay = getMap().addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
-                // Render links
-                attribution.setMovementMethod(LinkMovementMethod.getInstance());
-            } else {
-                mProvider.setData(mLists.get(dataset).getData());
-                mOverlay.clearTileCache();
-            }
-            // Update attribution
-            attribution.setText(Html.fromHtml(String.format(getString(R.string.attrib_format),
-                    mLists.get(dataset).getUrl())));
-
-        }
-
-        public void onNothingSelected(AdapterView<?> parent) {
-            // Another interface callback
-        }
-    }
-
-    // Datasets from http://data.gov.au
-    private ArrayList<LatLng> readItems(int resource) throws JSONException {
-        ArrayList<LatLng> list = new ArrayList<LatLng>();
-        InputStream inputStream = getResources().openRawResource(resource);
-        String json = new Scanner(inputStream).useDelimiter("\\A").next();
-        JSONArray array = new JSONArray(json);
-        for (int i = 0; i < array.length(); i++) {
-            JSONObject object = array.getJSONObject(i);
-            double lat = object.getDouble("lat");
-            double lng = object.getDouble("lng");
-            list.add(new LatLng(lat, lng));
-        }
-        return list;
-    }
 
     /**
      * Helper class - stores data sets and sources.
