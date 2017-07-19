@@ -31,6 +31,7 @@ public abstract class BaseMap extends SupportMapFragment implements OnMapReadyCa
 
     public MapDelegate delegate;
 
+    public static Integer zoomLevel = 10;
 
     @Override
     public void onActivityCreated(Bundle bundle) {
@@ -50,6 +51,7 @@ public abstract class BaseMap extends SupportMapFragment implements OnMapReadyCa
         mMap.getUiSettings().setMapToolbarEnabled(true);
         mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         mMap.setTrafficEnabled(false);
+        mMap.setMinZoomPreference(zoomLevel);
         startDemo();
     }
 
@@ -70,7 +72,7 @@ public abstract class BaseMap extends SupportMapFragment implements OnMapReadyCa
     public void onMapClick(LatLng latLng) {
         final Coords coords = new Coords(latLng.latitude, latLng.longitude);
 
-        CameraPosition position = new CameraPosition.Builder().zoom(10.0f).target(latLng).build();
+        CameraPosition position = new CameraPosition.Builder().zoom(zoomLevel).target(latLng).build();
         CameraUpdate camera = CameraUpdateFactory.newCameraPosition(position);
         mMap.animateCamera(camera);
 
