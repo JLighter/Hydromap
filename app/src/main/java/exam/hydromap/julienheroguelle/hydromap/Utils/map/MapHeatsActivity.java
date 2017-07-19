@@ -7,6 +7,7 @@ package exam.hydromap.julienheroguelle.hydromap.Utils.map;
 
 import android.graphics.Color;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -15,6 +16,7 @@ import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.google.maps.android.heatmaps.WeightedLatLng;
+import com.lapism.searchview.SearchView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.List;
 import exam.hydromap.julienheroguelle.hydromap.Delegates.MapDelegate;
 import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.Coords;
 import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.Forecast;
+import exam.hydromap.julienheroguelle.hydromap.R;
 
 
 /**
@@ -31,6 +34,7 @@ import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.Forec
  */
 public class MapHeatsActivity extends BaseMap {
 
+    // For both versions
     /**
      * Hydro map gradient
      * Generally blue
@@ -82,6 +86,7 @@ public class MapHeatsActivity extends BaseMap {
     @Override
     protected void startDemo() {
        getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(48.85, 2.34), 4));
+
     }
 
     public void changeGradient() {
@@ -106,4 +111,6 @@ public class MapHeatsActivity extends BaseMap {
     public void onMapClick(LatLng latLng) {
         super.onMapClick(latLng);
     }
+
+
 }
