@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import exam.hydromap.julienheroguelle.hydromap.Networking.Models.AWhereModel.Norm;
+import exam.hydromap.julienheroguelle.hydromap.Networking.Models.AWhereModel.NormList;
 import exam.hydromap.julienheroguelle.hydromap.Networking.Models.AWhereModel.Token;
 import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.Coords;
 import exam.hydromap.julienheroguelle.hydromap.Networking.Presenter.AWherePresenter;
@@ -119,7 +120,7 @@ public class AWhereRepository {
      *  Days are formatted like MM-DD
      *  Years are formatted like YYYY
      */
-    public void getNormsPrecisely(final Coords coords, final String startDay, final String endDay, final Integer startYear, final Integer endYear) {
+    public void getNormsPrecisely(final Coords coords, final String startDay, final String endDay, final String startYear, final String endYear) {
 
         // Defining call to execute
         final NestedFunction callback = new NestedFunction() {
@@ -130,19 +131,21 @@ public class AWhereRepository {
                 url += "/norms/" + startDay + "," + endDay;
                 url += "/years/" + startYear.toString() + "," + endYear.toString();
 
+                Log.d("NORM URL", url);
+
                 final AWhereRequest request = new AWhereRequest(Request.Method.GET, url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Gson gson = new Gson();
-                        Norm norm = gson.fromJson(response, Norm.class);
+                        NormList norms = gson.fromJson(response, NormList.class);
 
-                        listener.didGotNorm(norm, null);
+                        listener.didGotNorms(norms, null);
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
 
-                        listener.didGotNorm(null, error);
+                        listener.didGotNorms(null, error);
                     }
                 });
 

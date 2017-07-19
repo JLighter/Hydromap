@@ -10,8 +10,14 @@ public class Coords {
 
     @SerializedName("Lon")
     @Expose
-    public Double lon;
+    public Double Lon;
     @SerializedName("Lat")
+    @Expose
+    public Double Lat;
+    @SerializedName("lon")
+    @Expose
+    public Double lon;
+    @SerializedName("lat")
     @Expose
     public Double lat;
 
@@ -21,7 +27,24 @@ public class Coords {
     }
 
     public LatLng getLatLng() {
-        return new LatLng(this.lat, this.lon);
+        return new LatLng(getLat(), getLon());
     }
 
+    public Double getLat() {
+        if (lat != null) {
+            return lat;
+        } else if (Lat != null) {
+            return Lat;
+        }
+        return null;
+    }
+
+    public Double getLon() {
+        if (lon != null) {
+            return lon;
+        } else if (Lon != null) {
+            return Lon;
+        }
+        return null;
+    }
 }

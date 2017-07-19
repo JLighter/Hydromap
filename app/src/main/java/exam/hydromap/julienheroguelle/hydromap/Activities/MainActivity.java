@@ -33,41 +33,43 @@ import exam.hydromap.julienheroguelle.hydromap.Utils.map.MapHeatsActivity;
 
 public class MainActivity extends AppCompatActivity implements ForecastProtocol, MapDelegate{
 
+    private EditText editTextSearch;
+
     ForecastPresenter presenter = new ForecastPresenter(this);
 
     private Fragment heatMap;
 
     public SearchView mSearchView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mSearchView = (SearchView) findViewById(R.id.searchView);
+//        editTextSearch = (EditText) findViewById(R.id.editTextSearch);
 
+        mSearchView = (SearchView) findViewById(R.id.searchView);
+        mSearchView.setArrowOnly(true);
+        mSearchView.setVoice(false);
+        mSearchView.setHint("Search for a place...");
         heatMap = getSupportFragmentManager().findFragmentById(R.id.heatMap);
 
-        OWMRect rect = new OWMRect(-5f, 42f, 8f, 51f);
-
-        presenter.getForecastsByRect(rect, 10);
-
         ((MapHeatsActivity) heatMap).delegate = this;
+
 
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                //Log.e("onQueryTextChange", "called");
+                Log.e("onQueryTextChange", "called");
                 return false;
             }
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-
-
-
                 presenter.getForecastsByName(query,"FR");
+
+                mSearchView.open(true); // enable or disable animation
+
                 return false;
             }
 
@@ -88,27 +90,17 @@ public class MainActivity extends AppCompatActivity implements ForecastProtocol,
         if (error != null) {
             Log.e("FORECAST", error.toString());
         } else if (forecasts != null){
-
-            ArrayList<WeightedLatLng> list = new ArrayList<>();
-
-            for (Forecast forecast : forecasts) {
-                if (forecast.coord != null) {
-                    Coords coords = new Coords(forecast.coord.lat, forecast.coord.lon);
-                    WeightedLatLng wLatLng =  new WeightedLatLng(coords.getLatLng(), (forecast.main.humidity/100) * 2 + 0.01);
-                    list.add(wLatLng);
-
-                    Log.d("FORECAST WEIGHT", forecast.main.temp.toString());
-                }
-            }
-
-            //((MapHeatsActivity) heatMap).initData(list);
-
+            Log.e("UNEXPECTED FORECASTS", forecasts.toString());
         }
     }
 
     @Override
     public void didGotForecast(Forecast forecast, OWMError error) {
-
+        if (error != null) {
+            Log.e("FORECAST", error.toString());
+        } else if (forecast != null) {
+            didTapOnMapAt(new Coords(forecast.coord.getLat(), forecast.coord.getLon()));
+        }
     }
 
     @Override
@@ -118,17 +110,4 @@ public class MainActivity extends AppCompatActivity implements ForecastProtocol,
         detailIntent.putExtra("longitude", coords.lon);
         startActivity(detailIntent);
     }
-
-    // Only for SearchView.VERSION_MENU_ITEM
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.action_search: {
-//                mSearchView.open(true); // enable or disable animation
-//                return true;
-//            }
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//    }
 }

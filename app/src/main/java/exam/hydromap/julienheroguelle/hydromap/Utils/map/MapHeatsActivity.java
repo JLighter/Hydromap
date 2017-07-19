@@ -77,15 +77,9 @@ public class MapHeatsActivity extends BaseMap {
 
     private static boolean mHeatGradient = true;
 
-    private List<WeightedLatLng> currentList;
+    //private List<WeightedLatLng> currentList;
 
     public MapHeatsActivity() {
-
-    }
-
-    @Override
-    protected void startDemo() {
-       getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(48.85, 2.34), 4));
 
     }
 
@@ -101,11 +95,14 @@ public class MapHeatsActivity extends BaseMap {
         }
     }
 
+    /**
+     * This function is commented for now
     public void initData(ArrayList<WeightedLatLng> list) {
         currentList = list;
         mProvider = new HeatmapTileProvider.Builder().weightedData(list).radius(50).build();
         mOverlay = getMap().addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
     }
+    */
 
     @Override
     public void onMapClick(LatLng latLng) {

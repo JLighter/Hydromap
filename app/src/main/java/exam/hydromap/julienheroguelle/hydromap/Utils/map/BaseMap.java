@@ -31,7 +31,8 @@ public abstract class BaseMap extends SupportMapFragment implements OnMapReadyCa
 
     public MapDelegate delegate;
 
-    public static Integer zoomLevel = 10;
+    final public static Integer zoomLevel = 10;
+    final public static LatLng defaultLatLng = new LatLng(48.85, 2.34);
 
     @Override
     public void onActivityCreated(Bundle bundle) {
@@ -51,18 +52,14 @@ public abstract class BaseMap extends SupportMapFragment implements OnMapReadyCa
         mMap.getUiSettings().setMapToolbarEnabled(true);
         mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         mMap.setTrafficEnabled(false);
-        mMap.setMinZoomPreference(zoomLevel);
-        startDemo();
+        mMap.setMaxZoomPreference(zoomLevel);
+
+        getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, zoomLevel));
     }
 
     private void setUpMap() {
         getMapAsync(this);
     }
-
-    /**
-     * Run the demo-specific code.
-     */
-    protected abstract void startDemo();
 
     protected GoogleMap getMap() {
         return mMap;
