@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements ForecastProtocol,
         mSearchView = (SearchView) findViewById(R.id.searchView);
         mSearchView.setArrowOnly(true);
         mSearchView.setVoice(false);
-        mSearchView.setHint("Search for a place...");
+        mSearchView.setHint(R.string.search_view_hint);
         heatMap = getSupportFragmentManager().findFragmentById(R.id.heatMap);
 
         ((MapHeatsActivity) heatMap).delegate = this;
@@ -60,13 +60,12 @@ public class MainActivity extends AppCompatActivity implements ForecastProtocol,
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.e("onQueryTextChange", "called");
                 return false;
             }
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                presenter.getForecastsByName(query,"FR");
+                presenter.getForecastsByName(query,"");
 
                 mSearchView.open(true); // enable or disable animation
 

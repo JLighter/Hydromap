@@ -1,8 +1,11 @@
 package exam.hydromap.julienheroguelle.hydromap.Activities;
 
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -41,6 +44,8 @@ public class DetailActivity extends AppCompatActivity implements ForecastProtoco
     TextView minSummerLabel;
     TextView maxWinterLabel;
     TextView minWinterLabel;
+    TextView captionLabel;
+    Button refreshButton;
 
     Forecast forecast;
 
@@ -72,8 +77,18 @@ public class DetailActivity extends AppCompatActivity implements ForecastProtoco
         minSummerLabel = (TextView) findViewById(R.id.minSummerLabel);
         maxWinterLabel = (TextView) findViewById(R.id.maxWinterLabel);
         minWinterLabel = (TextView) findViewById(R.id.minWinterLabel);
+        captionLabel = (TextView) findViewById(R.id.captionLabel);
+
+        refreshButton = (Button) findViewById(R.id.refreshButton);
 
         Integer currentYear = Calendar.getInstance().get(Calendar.YEAR);
+
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                didTapRefreshBtn();
+            }
+        });
 
         startDatePicker.setText(String.format("%d", currentYear-4));
         endDatePicker.setText(String.format("%d", currentYear-1));
@@ -119,9 +134,36 @@ public class DetailActivity extends AppCompatActivity implements ForecastProtoco
         }
     }
 
+    public boolean validateRefresh() {
+        Integer startDate = Integer.parseInt(startDatePicker.getText().toString());
+        Integer endDate = Integer.parseInt(endDatePicker.getText().toString());
+
+        Integer currentYear = Calendar.getInstance().get(Calendar.YEAR);
+
+        if (endDate - startDate < 3) {
+            captionLabel.setTextColor(Color.rgb(255, 0, 0));
+            return false;
+        } else if (startDate < currentYear - 10) {
+            captionLabel.setTextColor(Color.rgb(255, 0, 0));
+            captionLabel.setText(String.format(getString(R.string.captionStartDateToLast), currentYear));
+            return false;
+        } else {
+            captionLabel.setText(getString(R.string.must_be_3_year_difference_between_2_dates));
+            return true;
+        }
+    }
+
     public void didTapRefreshBtn() {
-        getSummerTemp();
-        getWinterTemp();
+        if (validateRefresh()) {
+            getSummerTemp();
+            getWinterTemp();
+
+            minSummerLabel.setText("...");
+            maxSummerLabel.setText("...");
+
+            minWinterLabel.setText("...");
+            maxWinterLabel.setText("...");
+        }
     }
 
     private void getWinterTemp() {
@@ -187,12 +229,12 @@ public class DetailActivity extends AppCompatActivity implements ForecastProtoco
     }
 
     private void setHeaderWith(final Coords coords) {
-        Integer ratio = 16/9;
         Integer pictureHeight = 200;
 
-        String url = "http://maps.google.com/maps/api/staticmap?center=" + coords.lat + "," + coords.lon + "&zoom=" + BaseMap.zoomLevel + "&size=" +  500 + "x" + 200 + "&sensor=false&maptype=terrain&format=jpeg&visual_refresh=true";
+        String url = "http://maps.google.com/maps/api/staticmap?center=" + coords.lat + "," + coords.lon + "&zoom=" + BaseMap.zoomLevel + "&size=" +  500 + "x" + 300 + "&sensor=false&maptype=terrain&format=jpeg&visual_refresh=true";
         Log.d("STATIC MAP URL", url);
         Picasso.with(App.getAppContext()).load(url).into(header);
+
     }
 
     @Override

@@ -16,6 +16,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Timer;
@@ -31,7 +32,7 @@ public abstract class BaseMap extends SupportMapFragment implements OnMapReadyCa
 
     public MapDelegate delegate;
 
-    final public static Integer zoomLevel = 10;
+    final public static Integer zoomLevel = 11;
     final public static LatLng defaultLatLng = new LatLng(48.85, 2.34);
 
     @Override
@@ -47,6 +48,7 @@ public abstract class BaseMap extends SupportMapFragment implements OnMapReadyCa
         if (mMap != null) {
             return;
         }
+
         mMap = map;
         mMap.setOnMapClickListener(this);
         mMap.getUiSettings().setMapToolbarEnabled(true);
@@ -80,6 +82,8 @@ public abstract class BaseMap extends SupportMapFragment implements OnMapReadyCa
                 delegate.didTapOnMapAt(coords);
             }
         }, 2000);
+
+
 
     }
 }
