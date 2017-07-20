@@ -75,6 +75,8 @@ public class MainActivity extends AppCompatActivity implements ForecastProtocol,
         });
     }
 
+
+
     @Override
     protected void onResume() {
         super.onResume();
