@@ -9,11 +9,11 @@ import com.google.gson.Gson;
 
 import java.util.List;
 
-import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel.Coords;
-import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel.Forecast;
-import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel.OWMError;
-import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel.ForecastList;
-import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMDataModel.OWMRect;
+import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.Coords;
+import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.Forecast;
+import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.OWMError;
+import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.ForecastList;
+import exam.hydromap.julienheroguelle.hydromap.Networking.Models.OWMModels.OWMRect;
 import exam.hydromap.julienheroguelle.hydromap.Networking.Presenter.ForecastPresenter;
 import exam.hydromap.julienheroguelle.hydromap.Utils.Networking;
 
@@ -25,12 +25,15 @@ public class ForecastRepository {
 
     ForecastPresenter listener;
 
+    final String ENDPOINT = "http://api.openweathermap.org/";
+    final String KEY_ARGUMENT = "&APPID=b8c31462c4d84f66cee3773b95fdddd9";
+
     public ForecastRepository(ForecastPresenter listener) {
         this.listener = listener;
     }
 
     public void getForecastsByRect(OWMRect rect, Integer distance) {
-            String url = "http://api.openweathermap.org/data/2.5/box/city?";
+            String url = ENDPOINT + "data/2.5/box/city?";
             url += "bbox="
                     + rect.topLon + ","
                     + rect.leftLat + ","
@@ -38,7 +41,7 @@ public class ForecastRepository {
                     + rect.rightLat + ","
                     + distance;
             url += "&cluster=false";
-            url += Networking.getAPIKeyArgument();
+            url += KEY_ARGUMENT;
 
             StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
@@ -57,7 +60,7 @@ public class ForecastRepository {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    OWMError err = new OWMError("0", "No server");
+                    OWMError err = new OWMError("0", error.getLocalizedMessage());
                     listener.didGotForecasts(null, err);
                 }
             });
@@ -67,11 +70,11 @@ public class ForecastRepository {
     }
 
     public void getForecastsByCycle(Coords coords, Integer count) {
-        String url = "http://api.openweathermap.org/data/2.5/find?";
+        String url = ENDPOINT + "data/2.5/find?";
         url += "lat=" + coords.lat;
         url += "&lon=" + coords.lon;
         url += "&cnt=" + count;
-        url += Networking.getAPIKeyArgument();
+        url += KEY_ARGUMENT;
 
         StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -100,10 +103,10 @@ public class ForecastRepository {
     }
 
     public void getForecastByCoords(Coords coords) {
-        String url = "http://api.openweathermap.org/data/2.5/weather?";
+        String url = ENDPOINT + "data/2.5/weather?";
         url += "lat=" + coords.lat;
         url += "&lon=" + coords.lon;
-        url += Networking.getAPIKeyArgument();
+        url += KEY_ARGUMENT;
 
         StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -132,10 +135,10 @@ public class ForecastRepository {
     }
 
     public void getForecastsByZip(String code, String country) {
-        String url = "http://api.openweathermap.org/data/2.5/weather?";
+        String url = ENDPOINT + "data/2.5/weather?";
         url += "zip=" + code;
         url += "," + country;
-        url += Networking.getAPIKeyArgument();
+        url += KEY_ARGUMENT;
 
         StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -164,10 +167,10 @@ public class ForecastRepository {
     }
 
     public void getForecastsByName(String query, String country) {
-        String url = "http://api.openweathermap.org/data/2.5/weather?";
+        String url = ENDPOINT + "data/2.5/weather?";
         url += "q=" + query;
         url += "," + country;
-        url += Networking.getAPIKeyArgument();
+        url += KEY_ARGUMENT;
 
         StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -197,7 +200,7 @@ public class ForecastRepository {
 
     // WARNING : Each Id is considered as one API Call, if you put 3 id in the array, the call will count for 3 requests
     public void getForecastsById(List<Integer> ids) {
-        String url = "http://api.openweathermap.org/data/2.5/group?";
+        String url = ENDPOINT + "data/2.5/group?";
         url += "id=";
 
         for (Integer i = 0; i<ids.size(); i++) {
@@ -205,7 +208,7 @@ public class ForecastRepository {
             url += id + (i != ids.size() - 1 ? "," : "");
         }
 
-        url += Networking.getAPIKeyArgument();
+        url += KEY_ARGUMENT;
 
         final StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -227,6 +230,5 @@ public class ForecastRepository {
 
         Networking.getInstance().addToRequestQueue(request);
     }
-
 
 }

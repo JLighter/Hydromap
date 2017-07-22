@@ -47,10 +47,6 @@ public class Networking {
                 && activeNetwork.isConnectedOrConnecting();
     }
 
-    static public String getAPIKeyArgument() {
-        return "&APPID=b8c31462c4d84f66cee3773b95fdddd9";
-    }
-
     public <T> void addToRequestQueue(Request<T> req) {
         getRequestQueue().add(req);
     }
